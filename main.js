@@ -60,11 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Leírásos
     document.getElementById('kereso').addEventListener('click', async () => {
-        let szoveg = document.getElementById('keresett').value;
+        let szoveg = document.getElementById('keresett').value.toUpperCase();
         let response = await fetch('products.json');
         let eredmeny = await response.json();
 
-        let leirasos = eredmeny.products.filter(e => e.description.includes(szoveg))
+        let leirasos = eredmeny.products.filter(e => e.description.toUpperCase().includes(szoveg))
         adatmegjelenites(leirasos);
     });
 
