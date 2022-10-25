@@ -23,12 +23,23 @@ document.addEventListener('DOMContentLoaded', () => {
         let response = await fetch('products.json');
         let eredmeny = await response.json();
 
-        let abc = eredmeny.products.sort();
+        let abc = eredmeny.products.sort(function(a, b){
+            let anev = a.title.toUpperCase();
+            let bnev = b.title.toUpperCase();
+
+            if(anev < bnev){
+                return -1;
+            }else if(anev > bnev){
+                return 1;
+            }else {
+                return 0;
+            }
+        });
 
         let termekLista = document.getElementById('adatok');
         termekLista.textContent = '';
         // ha apple kell akkor appleTermekek a forba
-        for (let p of eredmeny.products){
+        for (let p of abc){
             let li = document.createElement('li');
             li.textContent = p.title;
             termekLista.appendChild(li);
