@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let response = await fetch('products.json');
         let eredmeny = await response.json();
 
-        let leirasos = eredmeny.products.contains(szoveg);
+        let leirasos = eredmeny.products.filter(e => e.description.includes(szoveg))
         adatmegjelenites(leirasos);
     });
 
