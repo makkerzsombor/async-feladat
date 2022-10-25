@@ -1,25 +1,22 @@
-let alap = fetch('products.json');
-
 document.addEventListener('DOMContentLoaded', () => {    
 
     // Mindig meg kell hívni
-    async function adatmegjelenites(termekLista) {
-        let response = await fetch('products.json');
-        let eredmeny = await response.json();
+    function adatmegjelenites(termekek) {
 
         let termekLista = document.getElementById('adatok');
         termekLista.textContent = '';
-        for (let p of eredmeny.products){
+        for (let p of termekek){
             let li = document.createElement('li');
-            li.textContent = p.title + ' leírás: ' + p.description + ' ár: ' + p.price + ' rating: ' + p.rating + ' raktáron: ' + p.stock +
-            ' márka: ' + p.brand + ' kategoria: ' + p.category;
+            li.innerHTML = p.title + '<br> leírás: ' + p.description + '<br> ár: ' + p.price + '<br> rating: ' + p.rating + '<br> raktáron: ' + p.stock + '<br> márka: ' + p.brand + '<br> kategoria: ' + p.category;
             termekLista.appendChild(li);
         }        
     }
 
     // Minden
-    document.getElementById('minden').addEventListener('click', async () => {
-        adatmegjelenites();
+    document.getElementById('minden').addEventListener('click', async () => {        
+        let response = await fetch('products.json');
+        let eredmeny = await response.json();
+        adatmegjelenites(eredmeny.products);
     });
 
     // ABC
@@ -40,43 +37,55 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        let termekLista = document.getElementById('adatok');
-        termekLista.textContent = '';
-        for (let p of abc){
-            let li = document.createElement('li');
-            li.textContent = p.title;
-            termekLista.appendChild(li);
-        }
+        adatmegjelenites(abc);
     });
 
     // Legdrágább
     document.getElementById('ar').addEventListener('click', async () => {
-
         let response = await fetch('products.json');
         let eredmeny = await response.json();
 
-        let sorrendes = eredmeny.products.sort();
+        let sorrendes = eredmeny.products.sort((a, b) => {
+            if(a.price < b.price){
+                return 1;
+            }else if(a.price > b.price){
+                return -1;
+            }else {
+                return 0;
+            }
+        });
 
-        let termekLista = document.getElementById('adatok');
-        termekLista.textContent = '';
-        for (let p of sorrendes){
-            let li = document.createElement('li');
-            li.textContent = p.title + ' ár: ' + p.price;
-            termekLista.appendChild(li);
-        }
-
-
+        adatmegjelenites(sorrendes);
     });
 
     // Leírásos
-    document.getElementById('kereso').addEventListener('click', () => {
+    document.getElementById('kereso').addEventListener('click', async () => {
         let szoveg = document.getElementById('keresett').value;
+        let response = await fetch('products.json');
+        let eredmeny = await response.json();
+
+        let leirasos = eredmeny.products.contains(szoveg);
+        adatmegjelenites(leirasos);
     });
 
     
     // Ajánlott
-    document.getElementById('100Alatt').addEventListener('click', () => {
-        termekLista.filter((e) => {return e < 100 });
+    document.getElementById('100Alatt').addEventListener('click', async () => {
+        let response = await fetch('products.json');
+        let eredmeny = await response.json();
+
+        let szazAlatt = eredmeny.products.filter(e => e.price <= 100);
+
+        let ertekeleses = szazAlatt.sort((a, b) => {
+            if(a.rating < b.rating){
+                return 1;
+            }else if(a.rating > b.rating){
+                return -1;
+            }else {
+                return 0;
+            }
+        });
+        adatmegjelenites(ertekeleses);
     });
 
 });
