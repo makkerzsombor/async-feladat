@@ -1,21 +1,25 @@
-
+let alap = fetch('products.json');
 
 document.addEventListener('DOMContentLoaded', () => {    
 
-    // Minden
-    document.getElementById('minden').addEventListener('click', async () => {
+    // Mindig meg kell hívni
+    async function adatmegjelenites(termekLista) {
         let response = await fetch('products.json');
         let eredmeny = await response.json();
 
         let termekLista = document.getElementById('adatok');
         termekLista.textContent = '';
-        // ha apple kell akkor appleTermekek a forba
         for (let p of eredmeny.products){
             let li = document.createElement('li');
             li.textContent = p.title + ' leírás: ' + p.description + ' ár: ' + p.price + ' rating: ' + p.rating + ' raktáron: ' + p.stock +
             ' márka: ' + p.brand + ' kategoria: ' + p.category;
             termekLista.appendChild(li);
-        }
+        }        
+    }
+
+    // Minden
+    document.getElementById('minden').addEventListener('click', async () => {
+        adatmegjelenites();
     });
 
     // ABC
@@ -38,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let termekLista = document.getElementById('adatok');
         termekLista.textContent = '';
-        // ha apple kell akkor appleTermekek a forba
         for (let p of abc){
             let li = document.createElement('li');
             li.textContent = p.title;
@@ -47,7 +50,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Legdrágább
-    document.getElementById('ar').addEventListener('click', () => {
+    document.getElementById('ar').addEventListener('click', async () => {
+
+        let response = await fetch('products.json');
+        let eredmeny = await response.json();
+
+        let sorrendes = eredmeny.products.sort();
+
+        let termekLista = document.getElementById('adatok');
+        termekLista.textContent = '';
+        for (let p of sorrendes){
+            let li = document.createElement('li');
+            li.textContent = p.title + ' ár: ' + p.price;
+            termekLista.appendChild(li);
+        }
+
 
     });
 
@@ -59,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Ajánlott
     document.getElementById('100Alatt').addEventListener('click', () => {
-
+        termekLista.filter((e) => {return e < 100 });
     });
 
 });
